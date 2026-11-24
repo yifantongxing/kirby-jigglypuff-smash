@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#151518"><title>大乱斗 · 卡比对胖丁</title>
+<style>/*__STYLE__*/</style>
+</head>
+<body>
+<div id="arena">
+  <canvas id="world" aria-label="Dream Land 战斗舞台"></canvas><canvas id="effects" aria-hidden="true"></canvas><canvas id="accent" aria-hidden="true"></canvas>
+  <div id="hud" hidden><div id="clock"></div><button id="pause" aria-label="暂停对战">Ⅱ</button><div id="damage"></div></div>
+  <template id="hud-art"><img src="art/kirby-hud.webp" data-stock="art/kirby-stock.webp" data-fp="art/kirby-fp.webp"><img src="art/puff-hud.webp" data-stock="art/puff-stock.webp" data-fp="art/puff-fp.webp"></template>
+  <div id="final-cutins" hidden><img src="art/final-kirby-cutin.webp" alt=""><img src="art/final-puff-cutin.webp" alt=""></div>
+  <img id="sword-finish-sweep" src="art/final-sword-finish.webp" alt="" hidden>
+  <img id="sword-band-palette" src="art/final-sword-bands.webp" alt="" hidden>
+  <img id="puff-vortex-map" src="art/final-puff-vortex.webp" alt="" hidden>
+  <div id="sword-combo-plates" hidden><img src="art/final-sword-strokes-0.webp" alt=""><img src="art/final-sword-strokes-1.webp" alt=""><img src="art/final-sword-strokes-2.webp" alt=""></div>
+  <img id="puff-up-dust" src="art/puff-up-dust.webp" alt="" hidden>
+  <img id="puff-irises" src="art/puff-irises.webp" alt="" hidden>
+  <img id="throw-fire" src="art/throw-slam.webp" alt="" hidden>
+  <img id="launch-wind" src="art/launch-wind.webp" alt="" hidden>
+  <img id="dash-smoke" src="art/dash-smoke.webp" alt="" hidden>
+  <img id="back-air-wisps" src="art/back-air-wisps.webp" alt="" hidden>
+  <div id="callout" aria-live="polite"></div>
+  <div id="loading-art" role="status" hidden>正在载入斗士和舞台…</div>
+  <div id="touch" hidden><div class="touch-taunts" role="group" aria-label="挑衅">
+    <button class="touch-taunt" data-action="taunt" aria-label="下挑衅">挑衅 ↓</button>
+    <button data-action="tauntUp" aria-label="上挑衅">↑</button><button data-action="tauntSide" aria-label="横挑衅">↔</button>
+  </div><div class="pad" aria-label="移动方向"><i></i></div><div class="touch-actions">
+    <button data-action="grab">投</button><button data-action="shield">盾</button><button data-action="smash">猛击</button>
+    <button data-action="attack">攻击</button><button data-action="special">必杀</button><button data-action="jump">跳</button>
+  </div></div>
+</div>
+<main id="lobby">
+  <header><div class="brand"><i class="smash-mark" aria-hidden="true"></i><strong>SUPER SMASH BROS.<small>ULTIMATE</small></strong></div>
+    <div class="headright"><button id="sound" aria-pressed="true" title="切换声音"><span class="soundicon" aria-hidden="true">▮▮▮</span><span id="sound-label">声音开启</span></button><button id="guide"><i class="keyicon">?</i>操作指南</button></div>
+  </header>
+  <div class="lobby-body">
+    <div class="match-head"><div><div class="eyebrow"><span></span> SMASH BATTLE</div><h1>斗士对决</h1></div>
+    <div class="rules"><span>存量制</span><b>3</b> 命<i></i><b>7:00</b><i></i>无道具<button id="fs-rule" aria-pressed="true">最终绝招表 · 开</button></div></div>
+    <div class="matchup" aria-label="选择一号玩家斗士">
+      <div class="fighter-card red"><div class="series-mark star" aria-hidden="true">★</div><div class="grain"></div>
+        <div class="slot"><b id="slot0">1P</b><span>FIGHTER <strong>06</strong></span></div>
+        <img class="hero kirby" src="art/kirby.webp" alt="">
+        <div class="fighter-title"><h2>KIRBY</h2><p>卡比</p></div>
+        <button class="choose" data-choice="0" aria-label="选择卡比为一号玩家"></button>
+      </div>
+      <div class="fighter-card blue"><div class="series-mark ball" aria-hidden="true"></div><div class="grain"></div>
+        <div class="slot"><b id="slot1">CPU</b><span>FIGHTER <strong>12</strong></span></div>
+        <img class="hero puff" src="art/puff.webp" alt="">
+        <div class="fighter-title"><h2>JIGGLYPUFF</h2><p>胖丁</p></div>
+        <button class="choose" data-choice="1" aria-label="选择胖丁为一号玩家"></button>
+      </div>
+      <b class="versus" aria-hidden="true">VS<span>.</span></b>
+    </div>
+    <div class="setup"><div class="stage-info"><img src="art/stage.webp" alt=""><div><small>STAGE</small><b>噗噗噗之国</b><em>Dream Land</em></div></div>
+      <div class="mode"><button id="cpu" aria-pressed="true">人机对战</button><button id="local" aria-pressed="false">本地双人</button></div>
+      <button class="start" id="start"><span>开始对战</span><b aria-hidden="true">❯</b></button></div>
+    <footer><span><kbd>←</kbd><kbd>→</kbd> 选择 1P 斗士</span><span><kbd>Enter</kbd> 开始</span><span class="footnote">非官方同人 Demo</span></footer>
+  </div>
+</main>
+<dialog id="help"><div class="dialog-head"><div class="eyebrow"><span></span> HOW TO PLAY</div><h2>操作指南</h2><button class="close" aria-label="关闭操作指南">×</button></div>
+  <div class="help-content"><p>累积对手的伤害，再用猛击将其击出场外。先耗尽三条命的一方落败。</p>
+  <div class="replays"><label for="replay-select">实机对局重放</label><select id="replay-select"><option value="back-air">卡比 · 空中后踢</option><option value="puff-up">胖丁 · 变大</option><option value="ultra-sword">卡比 · 究极连环剑</option></select><button id="watch-replay" class="replay-clip">重放</button></div>
+  <table><thead><tr><th>动作</th><th>1P</th><th>2P</th></tr></thead><tbody>
+  <tr><td>移动 / 方向</td><td>W A S D</td><td>↑ ← ↓ →</td></tr>
+  <tr><td>步行</td><td>左 Shift + A / D</td><td>右 Ctrl + ← / →</td></tr>
+  <tr><td>跳跃 / 空中再跳</td><td>空格</td><td>回车</td></tr>
+  <tr><td>普通攻击 / 必杀技</td><td>J / K</td><td>, / .</td></tr>
+  <tr><td>蓄力猛击</td><td>L</td><td>/</td></tr><tr><td>护盾 / 抓投</td><td>U / I</td><td>右 Shift / '</td></tr>
+  <tr><td>挑衅 / 卡比解除复制</td><td>T</td><td>]</td></tr><tr><td>暂停</td><td colspan="2">Esc</td></tr></tbody></table>
+  <p>地面按挑衅键使出下挑衅，配合上或横方向可换动作。触屏点击左上角的 ↓、↑ 或 ↔，手柄按十字键。卡比的三种挑衅都能主动解除复制，再次吸入。</p>
+  <p>方向配合攻击或必杀可切换招式。向下按可穿过悬空平台，在空中下落时按下可急降。护盾配合方向可闪避，松盾瞬间可精准防御。</p>
+  <p>站定按住普通攻击会连续出拳。卡比打中对手后会接百裂拳，松开即可收招。抓住对手后按攻击可拍打，推方向可前投、后投、上投或下投。</p>
+  <p>开启最终绝招表时，名字下方的彩条会随战斗积累。蓄满后松开方向，按必杀键发动卡比的究极连环剑或胖丁的巨大化。</p>
+  <p>抓住台边后，朝台内推方向可爬上去，按盾可翻滚上台，按攻击可出招上台，也可以直接跳起。</p>
+  <p>手柄左摇杆轻推步行，快推冲刺。地面快推方向并按普通攻击可蓄力猛击。右摇杆单独选择攻击方向，空中可边后退边向前踢。跳跃与普通攻击同按可小跳攻击，同时按两个跳跃键可单独小跳。选人时左右换角色，上下切换人机或双人，＋ / Start 开战或暂停。</p>
+  <div class="moves"><div><b>卡比</b><span>中 · 吸入（含住后按下复制）</span><span>横 · 锤子</span><span>上 · 最终斩刀</span><span>下 · 石头</span></div><div><b>胖丁</b><span>中 · 滚动（按住蓄力，松开冲出）</span><span>横 · 拍击</span><span>上 · 唱歌</span><span>下 · 睡觉</span></div></div>
+  </div></dialog>
+<dialog id="break"><div class="dialog-head"><div class="eyebrow"><span></span> SMASH BATTLE</div><h2 id="break-title">暂停</h2></div>
+  <div class="champion"><img id="winner-art" alt=""><b id="winner-name"></b><span>1</span></div><div class="break-items"><button class="start" id="resume">继续对战</button><button id="rematch">重新对战</button><button id="break-guide">操作指南</button><button id="return">返回对阵</button></div></dialog>
+<div id="fatal" role="alert" hidden></div>
+<!--__SCRIPTS__-->
+</body></html>
